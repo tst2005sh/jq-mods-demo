@@ -1,5 +1,6 @@
 
-. ./lib/flatify.jq.lib.sh
+. ./deps/jq-helpers/lib/jq_stack4.lib.sh
+JQ_STACK4_MODDIR=./lib
 
 echo '
 {"id":1,"foo":"foo",                "custom_fields":{"x":"x1","foo":"FOO1"}}
@@ -7,6 +8,6 @@ echo '
 {"id":3,"foo":"foo3", "bar":"bar3" ,"custom_fields":null}
 {"id":4,"foo":"foo4", "bar":"bar4"}
 ' |
-jq -cM "$jq_function_flatify"'
-if .custom_fields? then flatify(.custom_fields;"CF_\(.)") else del(.custom_fields) end
-'
+jq_stack4 -cM :modload flatify :call '
+flatify(.custom_fields;"CF_\(.)")
+' :run
