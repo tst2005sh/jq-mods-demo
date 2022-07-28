@@ -1,9 +1,7 @@
 
-. ./lib/tobase.jq.lib.sh
-. ./lib/tohexstring.jq.lib.sh
-. ./lib/tohex.jq.lib.sh
-
-jq -ncM "$jq_function_tobase$jq_function_tohexstring$jq_function_tohex"'
+. ./deps/jq-helpers/lib/jq_stack4.lib.sh
+JQ_STACK4_MODDIR=./lib
+jq_stack4 -ncM :modload tohex :call '
 (
 0		| tohex == "0"
 ),(
@@ -17,4 +15,4 @@ jq -ncM "$jq_function_tobase$jq_function_tohexstring$jq_function_tohex"'
 ),(
 17591936700415	| tohex == "ffff1234fff"
 )
-'
+' :run
