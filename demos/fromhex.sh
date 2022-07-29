@@ -1,9 +1,7 @@
 
-. ./lib/frombase.jq.lib.sh
-. ./lib/fromhexstring.jq.lib.sh
-. ./lib/fromhex.jq.lib.sh
-
-jq -ncM "$jq_function_frombase$jq_function_fromhexstring$jq_function_fromhex"'
+. ./deps/jq-helpers/lib/jq_stack4.lib.sh
+JQ_STACK4_MODDIR=./lib
+jq_stack4 -ncM :modload fromhex :call '
 (
 "0"		| fromhex == 0
 ),(
@@ -17,4 +15,4 @@ jq -ncM "$jq_function_frombase$jq_function_fromhexstring$jq_function_fromhex"'
 ),(
 "FFFF1234fff"	| fromhex == 17591936700415
 )
-'
+' :run
