@@ -1,6 +1,7 @@
-. ./lib/packby.jq.lib.sh
 
-jq -ncM "$jq_function_packby"'
+. ./deps/jq-helpers/lib/jq_stack4.lib.sh
+JQ_STACK4_MODDIR=./lib
+jq_stack4 -ncM :modload packby :call '
 (
 	[1,2,3,4,5,6,7,8,9,10,11,12] | packby(2) == [[1,2],[3,4],[5,6],[7,8],[9,10],[11,12]]
 ),(
@@ -12,4 +13,4 @@ jq -ncM "$jq_function_packby"'
 ),(
 	[1,2,3,4,5,6,7,8,9,10,11,12] | packby(5) == [[1,2,3,4,5],[6,7,8,9,10],[11,12]]
 )
-'
+' :run
