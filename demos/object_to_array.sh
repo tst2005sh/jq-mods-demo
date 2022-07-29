@@ -1,4 +1,8 @@
 
+
+. ./deps/jq-helpers/lib/jq_stack4.lib.sh
+JQ_STACK4_MODDIR=./lib
+
 # syntax:
 # 'object_to_array' will produce a content with all object keys as column
 # '_object_to_array(["key1","key2"])' will produce a content with only specified object keys (key1 and key2)
@@ -22,21 +26,24 @@ echo '[
 ####
 result="$(
 	sample1 |
-	jq -cM "$jq_function_object_to_array"'map(with_entries(select(.key=="BAR")))|object_to_array(["BAR"])'
+	jq_stack4 -cM :modload object_to_array :call '
+		map(with_entries(select(.key=="BAR")))|object_to_array(["BAR"])
+	' :run
+
 )"
 expected='[["BAR"],["bar1"],["bar2"]]'
 [ "$result" = "$expected" ] && echo ok || echo ko
 
 ####
 
-result="$( sample1 | jq -cM "$jq_function_object_to_array"'object_to_array' )"
+result="$( sample1 | jq_stack4 -cM :modcall object_to_array :run )"
 expected='[["BAR","BUZ","FOO"],["bar1","zzz1","foo1"],["bar2",null,"foo2"]]'
 [ "$result" = "$expected" ] && echo ok || echo ko
 
 ####
 #result="$(
 #	sample1 |
-#	jq -r "$jq_function_object_to_array$jq_function_array_to_csv"'object_to_array|array_to_csv'
+#	jq_stack4 -cM :modload object_to_array :modload tocsv :call 'object_to_array|tocsv' -r :run
 #)"
 #
 #expected='"BAR","BUZ","FOO"
@@ -48,7 +55,7 @@ expected='[["BAR","BUZ","FOO"],["bar1","zzz1","foo1"],["bar2",null,"foo2"]]'
 ####
 result="$(
 	sample1 |	
-	jq -cM "$jq_function_object_to_array"'object_to_array(["BUZ"])'
+	jq_stack4 -cM :modload object_to_array :call 'object_to_array(["BUZ"])' :run
 )"
 expected='[["BUZ","BAR","FOO"],["zzz1","bar1","foo1"],[null,"bar2","foo2"]]'
 [ "$result" = "$expected" ] && echo ok || echo ko
@@ -56,8 +63,8 @@ expected='[["BUZ","BAR","FOO"],["zzz1","bar1","foo1"],[null,"bar2","foo2"]]'
 ####
 
 result="$(
-	sample1 |	
-	jq -cM "$jq_function_object_to_array"'map({"BUZ":.BUZ})|object_to_array'
+	sample1 |
+	jq_stack4 -cM :modload object_to_array :call 'map({"BUZ":.BUZ})|object_to_array' :run
 )"
 expected='[["BUZ"],["zzz1"],[null]]'
 [ "$result" = "$expected" ] && echo ok || echo ko
