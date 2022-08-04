@@ -8,10 +8,11 @@ jq_stack4 -ncM :modload with_kv :call '
 {"a":"A"}			|to_kv | .== [{key:"a",value:"A"}]	),(
 ["foo"]				|to_kv | .== [{key:0, value:"foo"}]	),(
 
-#[]				|from_kv == {}				),(
-#[{key:"a",value:"A"}]		|from_kv == {"a":"A"}			),(
-#[{key:0, value:"foo"}]		|from_kv == ["foo"]			),(
+[]				|from_kv("object") == {}		),(
 []				|from_kv("array") == []			),(
+[{key:"a",value:"A"}]		|from_kv("object") == {"a":"A"}		),(
+[{key:0, value:"foo"}]		|from_kv("array") == ["foo"]		),(
+#[{key:0, value:"foo"}]		|from_kv("object") == {"0":"foo"}	),(
 
 {}				|with_kv(.) == {}			),(
 {"a":"A"}			|with_kv(.) == {"a":"A"}		),(
