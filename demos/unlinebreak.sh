@@ -1,5 +1,8 @@
 
-. ./lib/unlinebreak.jq.lib.sh
+
+. ./deps/jq-helpers/lib/jq_stack4.lib.sh
+JQ_STACK4_MODDIR=./lib
+
 
 # apt-cache show make
 
@@ -40,17 +43,17 @@ Filename: pool/main/m/make-dfsg/make_4.2.1-1.2_amd64.deb
 EOF
 )"
 
-result="$(
+#result="$(
 	data_sample_apt |
-	jq -MrR "$jq_function_unlinebreak"'
+	jq_stack4 -MrR :modload unlinebreak :call '
 		[.,inputs]
 		| unlinebreak(startswith(" "))
 		| map(join(""))
 		| .[]
-	'
-)"
+	' :run
+#)"
 
-[ "$result" = "$expected" ] && echo ok apt || echo KO apt
+#[ "$result" = "$expected" ] && echo ok apt || echo KO apt
 
 
 # rpm -qi make kbd-legacy
@@ -148,16 +151,16 @@ Description : The kbd-legacy package contains original keymaps for kbd package.P
 EOF
 )"
 
-result="$(
+#result="$(
 	data_sample_rpm |
-	jq -cMRr "$jq_function_unlinebreak"'
+	jq_stack4 -cMRr :modload unlinebreak :call '
 		[.,inputs]
 		| unlinebreak( (test("^([A-Z]\\w+ *)+\\s*:")|not) )
 		| map(if length>1 and (first|endswith(":")) then .[0]|=(.+" ") else . end)
 		| map(join(""))
 		| .[]
-	'
-)"
-
-[ "$result" = "$expected" ] && echo ok rpm || echo KO rpm
+	' :run
+#)"
+#
+#[ "$result" = "$expected" ] && echo ok rpm || echo KO rpm
 
