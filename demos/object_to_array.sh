@@ -8,9 +8,6 @@ JQ_STACK4_MODDIR=./lib
 # '_object_to_array(["key1","key2"])' will produce a content with only specified object keys (key1 and key2)
 # 'object_to_array(["key1","key2"]) will produce a content with all object keys as column but in specified order : key1 then key2 then all others (in not specified order)
 
-. ./lib/object_to_array.jq.lib.sh
-#. ./lib/tocsv.jq.lib.sh
-
 sample1() {
 echo '[
 {	"FOO":"foo1",
